@@ -1,11 +1,10 @@
 <?php
 include '../../config/koneksi.php';
 
-// Periksa apakah ada ID yang dikirim
+
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    // Ambil data parkir berdasarkan ID
     $query = "SELECT * FROM parkir WHERE id_parkir = ?";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "i", $id);
@@ -26,6 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jam_masuk = $_POST['jam_masuk'];
     $jam_keluar = $_POST['jam_keluar'];
     $biaya = $_POST['biaya'];
+
+    // Ambil tanggal hari ini untuk ditambahkan ke jam_masuk dan jam_keluar
+    $tanggal_sekarang = date('Y-m-d');  // Tanggal hari ini
+
+    // Gabungkan tanggal dengan jam untuk jam_masuk dan jam_keluar
+    $jam_masuk = $tanggal_sekarang . ' ' . $jam_masuk;
+    $jam_keluar = $tanggal_sekarang . ' ' . $jam_keluar;
 
     // Query update
     $query = "UPDATE parkir SET tempat_parkir=?, jam_masuk=?, jam_keluar=?, biaya=? WHERE id_parkir=?";
@@ -55,10 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="text" name="tempat_parkir" value="<?= $data['tempat_parkir']; ?>" required><br>
 
         <label>Jam Masuk:</label>
-        <input type="time" name="jam_masuk" value="<?= $data['jam_masuk']; ?>" required><br>
+        <!-- Mengambil waktu dari DB dan memastikan format sesuai input time -->
+        <input type="time" name="jam_masuk" value="<?= date('H:i', strtotime($data['jam_masuk'])); ?>" required><br>
 
         <label>Jam Keluar:</label>
-        <input type="time" name="jam_keluar" value="<?= $data['jam_keluar']; ?>" required><br>
+        <!-- Mengambil waktu dari DB dan memastikan format sesuai input time -->
+        <input type="time" name="jam_keluar" value="<?= date('H:i', strtotime($data['jam_keluar'])); ?>" required><br>
 
         <label>Biaya:</label>
         <input type="number" name="biaya" value="<?= $data['biaya']; ?>" required><br>

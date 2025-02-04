@@ -14,6 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
+    // Format waktu agar sesuai dengan format MySQL datetime
+    $tanggal = date('Y-m-d'); // Mengambil tanggal hari ini
+    $jam_masuk = $tanggal . ' ' . $jam_masuk . ':00'; // Menambahkan waktu dan detik
+    $jam_keluar = $tanggal . ' ' . $jam_keluar . ':00';
+
     // Query INSERT menggunakan prepared statement
     $query = "INSERT INTO parkir (tempat_parkir, jam_masuk, jam_keluar, biaya) VALUES (?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query);
